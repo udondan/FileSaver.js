@@ -280,4 +280,6 @@ if (typeof module !== "undefined" && module !== null) {
   define([], function() {
     return saveAs;
   });
+} else if(typeof Meteor !== 'undefined') { // make it available for Meteor
+  Meteor.saveAs = saveAs;
 }
