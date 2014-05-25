@@ -102,10 +102,30 @@ var saveAs = saveAs
 					if (target_view) {
 						target_view.location.href = object_url;
 					} else {
-						window.open(object_url, "_blank");
+						if(navigator.userAgent.match(/7\.[\d\s\.]+Safari/)	// is Safari 7.x
+								&& typeof window.FileReader !== "undefined"			// can convert to base64
+								&& blob.size <= 1024*1024*150										// file size max 150MB
+								) {	
+							var reader = new window.FileReader();
+							reader.readAsDataURL(blob);
+							reader.onloadend = function() {
+								var frame = doc.createElement("iframe");
+								frame.src = reader.result;
+								frame.style.display = "none";
+								doc.body.appendChild(frame);
+								dispatch_all();
+								return;
+							}
+							filesaver.readyState = filesaver.DONE;
+							return;
+						}
+						else {
+							window.open(object_url, "_blank");
+							filesaver.readyState = filesaver.DONE;
+							dispatch_all();
+							return;
+						}
 					}
-					filesaver.readyState = filesaver.DONE;
-					dispatch_all();
 				}
 				, abortable = function(func) {
 					return function() {
