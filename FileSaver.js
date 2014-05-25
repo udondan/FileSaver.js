@@ -117,11 +117,13 @@ var saveAs = saveAs
 								return;
 							}
 							filesaver.readyState = filesaver.DONE;
+							filesaver.savedAs = filesaver.SAVEDASUNKNOWN;
 							return;
 						}
 						else {
 							window.open(object_url, "_blank");
 							filesaver.readyState = filesaver.DONE;
+							filesaver.savedAs = filesaver.SAVEDASBLOB;
 							dispatch_all();
 							return;
 						}
@@ -158,6 +160,7 @@ var saveAs = saveAs
 				);
 				save_link.dispatchEvent(event);
 				filesaver.readyState = filesaver.DONE;
+				filesaver.savedAs = filesaver.SAVEDASBLOB;
 				dispatch_all();
 				return;
 			}
@@ -192,6 +195,7 @@ var saveAs = saveAs
 									target_view.location.href = file.toURL();
 									deletion_queue.push(file);
 									filesaver.readyState = filesaver.DONE;
+									filesaver.savedAs = filesaver.SAVEDASBLOB;
 									dispatch(filesaver, "writeend", event);
 								};
 								writer.onerror = function() {
@@ -207,6 +211,7 @@ var saveAs = saveAs
 								filesaver.abort = function() {
 									writer.abort();
 									filesaver.readyState = filesaver.DONE;
+									filesaver.savedAs = filesaver.FAILED;
 								};
 								filesaver.readyState = filesaver.WRITING;
 							}), fs_error);
@@ -234,11 +239,16 @@ var saveAs = saveAs
 	FS_proto.abort = function() {
 		var filesaver = this;
 		filesaver.readyState = filesaver.DONE;
+		filesaver.savedAs = filesaver.FAILED;
 		dispatch(filesaver, "abort");
 	};
 	FS_proto.readyState = FS_proto.INIT = 0;
 	FS_proto.WRITING = 1;
 	FS_proto.DONE = 2;
+	FS_proto.FAILED = -1;
+	FS_proto.SAVEDASBLOB = 1;
+	FS_proto.SAVEDASURI = 2;
+	FS_proto.SAVEDASUNKNOWN = 3;
 
 	FS_proto.error =
 	FS_proto.onwritestart =
