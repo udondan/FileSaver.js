@@ -81,8 +81,6 @@ Note: The standard HTML5 `canvas.toBlob()` method is not available in all browse
 [canvas-toBlob.js][5] is a cross-browser `canvas.toBlob()` that polyfills this.
 
 
-![Tracking image](https://in.getclicky.com/212712ns.gif)
-
   [1]: http://eligrey.com/demos/FileSaver.js/
   [3]: https://developer.mozilla.org/en-US/docs/DOM/Blob
   [4]: https://github.com/eligrey/Blob.js
